@@ -2,8 +2,8 @@ import { useTheme } from '@/hooks/useTheme';
 import { useAppStore } from '@/state/useAppStore';
 import { ProviderWithCategory } from '@/types';
 import React, { useEffect } from 'react';
-import { Alert, SafeAreaView, ScrollView, Text, View } from 'react-native';
-
+import { Alert, ScrollView, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 // Import all the necessary components
 import CategoryButton from '@/components/home/CategoryButton';
 import { HomeHeader } from '@/components/home/HomeHeader';

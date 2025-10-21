@@ -1,7 +1,7 @@
 import { Booking, Category, Provider, User } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import create from 'zustand';
+import { create } from 'zustand';
 
 // Import the local mock data as a fallback and for online fetching
 import localData from '../data/db.json';

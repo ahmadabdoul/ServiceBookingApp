@@ -1,7 +1,7 @@
 import data from '@/data/db.json';
 import { Category, Provider } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import create from 'zustand';
+import { create } from 'zustand';
 
 const PROVIDER_CACHE_KEY = 'provider_data_cache';
 
