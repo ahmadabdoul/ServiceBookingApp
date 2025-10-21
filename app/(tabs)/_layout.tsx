@@ -24,7 +24,7 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="home" // This now points to the home directory
+        name="home"
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <Ionicons name="home" size={24} color={color} />,

@@ -21,7 +21,25 @@ export interface Category {
     gallery: string[];
   }
   
+  export interface Booking {
+    id: number;
+    providerId: number;
+    userId: number;
+    date: string;
+    time: string;
+    hours: number;
+    totalCost: number;
+    status: 'confirmed' | 'pending' | 'cancelled';
+  }
   
+  export interface User {
+    id: number;
+    name: string;
+    email: string;
+    avatar: string;
+  }
+  
+  // A view-model type for displaying providers with their category name
   export interface ProviderWithCategory extends Provider {
     categoryName: string;
   }
