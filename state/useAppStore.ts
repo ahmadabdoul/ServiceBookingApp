@@ -36,9 +36,9 @@ export const useAppStore = create<AppState>((set) => ({
       const netState = await NetInfo.fetch();
 
       if (netState.isConnected && netState.isInternetReachable) {
-        // --- ONLINE PATH ---
+        
         console.log("App is online. Fetching fresh data...");
-        // Simulate a network delay
+        
         await new Promise(resolve => setTimeout(resolve, 1000)); 
         
         const freshData = {

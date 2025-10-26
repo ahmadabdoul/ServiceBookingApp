@@ -42,7 +42,7 @@ const HomeScreen = () => {
 
   const renderSkeleton = () => (
     <View className="p-4">
-      <HomeHeader /> {/* Header now has its own internal skeleton */}
+      <HomeHeader /> 
       <SkeletonLoader style={{ width: '100%', height: 50, borderRadius: 12, marginTop: 24 }} />
       <SkeletonLoader style={{ width: '100%', height: 130, borderRadius: 16, marginTop: 24 }} />
       <View className="mt-6">
