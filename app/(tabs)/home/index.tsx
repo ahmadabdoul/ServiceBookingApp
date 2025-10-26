@@ -1,5 +1,5 @@
+import { useAppContext } from '@/contexts/AppContext';
 import { useTheme } from '@/hooks/useTheme';
-import { useAppStore } from '@/state/useAppStore';
 import { ProviderWithCategory } from '@/types';
 import React, { useEffect } from 'react';
 import { Alert, ScrollView, Text, View } from 'react-native';
@@ -13,20 +13,13 @@ import { SearchBar } from '@/components/home/SearchBar';
 import SkeletonLoader from '@/components/shared/SkeletonLoader';
 
 const HomeScreen = () => {
-  // Select multiple states from the store in a single hook
-  const { providers, categories, isLoading, error, initializeAppData } = useAppStore((state) => ({
-    providers: state.providers,
-    categories: state.categories,
-    isLoading: state.isLoading,
-    error: state.error,
-    initializeAppData: state.initializeAppData,
-  }));
+  const { providers, categories, isLoading, error, initializeAppData } = useAppContext();
   const { theme } = useTheme();
 
   useEffect(() => {
     // Initialize the app data on first render
     initializeAppData();
-  }, [initializeAppData]);
+  }, []);
 
   // Display an alert if there's an error (e.g., offline with no cache)
   useEffect(() => {
