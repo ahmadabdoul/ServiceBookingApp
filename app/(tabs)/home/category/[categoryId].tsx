@@ -5,7 +5,7 @@ import { useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { ActivityIndicator, FlatList, Text, View } from 'react-native';
 
-// Import reusable components
+
 import { CategoryHeader } from '@/components/category/CategoryHeader';
 import ProviderCard from '@/components/home/ProviderCard';
 import { SafeAreaView } from 'react-native-safe-area-context';
