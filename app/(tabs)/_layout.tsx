@@ -44,6 +44,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ color }) => <Ionicons name="person-circle" size={26} color={color} />,
         }}
       />
+      
     </Tabs>
   );
 }

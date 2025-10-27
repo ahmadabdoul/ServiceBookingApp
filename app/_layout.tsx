@@ -29,6 +29,13 @@ export default function RootLayout() {
       <ThemeProvider>
         <Stack initialRouteName='(tabs)'>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen 
+            name="booking" 
+            options={{ 
+              presentation: 'modal',
+              headerShown: false, 
+            }} 
+          />
         </Stack>
       </ThemeProvider>
     </AppProvider>

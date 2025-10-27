@@ -8,7 +8,6 @@ interface StickyBookingFooterProps {
 }
 
 export const StickyBookingFooter: React.FC<StickyBookingFooterProps> = ({ provider }) => {
-  
   const bottomPadding = Platform.OS === 'ios' ? 'pb-8' : 'pb-4';
 
   return (
@@ -19,7 +18,14 @@ export const StickyBookingFooter: React.FC<StickyBookingFooterProps> = ({ provid
           <Text className="text-2xl font-bold text-gray-900 dark:text-white">${provider.pricePerHour}</Text>
         </View>
         
-        <Link href={`/booking/${provider.id}`} asChild> 
+        {/* Use the `href` object to pass parameters to the modal route */}
+        <Link 
+          href={{
+            pathname: "/booking",
+            params: { providerId: provider.id }
+          }} 
+          asChild
+        > 
           <TouchableOpacity className="bg-blue-500 rounded-xl px-10 py-4">
             <Text className="text-white text-lg font-bold">Book Now</Text>
           </TouchableOpacity>

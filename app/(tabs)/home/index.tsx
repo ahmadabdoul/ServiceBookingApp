@@ -1,23 +1,21 @@
-import { useAppContext } from '@/contexts/AppContext';
-import { useTheme } from '@/hooks/useTheme';
-import { ProviderWithCategory } from '@/types';
-import React, { useEffect } from 'react';
-import { Alert, ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-// Import all the necessary components
 import CategoryButton from '@/components/home/CategoryButton';
 import { HomeHeader } from '@/components/home/HomeHeader';
 import { OfferBanner } from '@/components/home/OfferBanner';
 import ProviderCard from '@/components/home/ProviderCard';
 import { SearchBar } from '@/components/home/SearchBar';
 import SkeletonLoader from '@/components/shared/SkeletonLoader';
+import { useAppContext } from '@/contexts/AppContext';
 import "@/global.css";
+import { useTheme } from '@/hooks/useTheme';
+import { ProviderWithCategory } from '@/types';
+import React, { useEffect } from 'react';
+import { Alert, ScrollView, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const HomeScreen = () => {
-  const { providers, categories, isLoading, error, initializeAppData } = useAppContext();
+  const { providers, categories, isLoading, error } = useAppContext();
   const { theme } = useTheme();
 
-  // Display an alert if there's an error (e.g., offline with no cache)
   useEffect(() => {
     if (error) {
       Alert.alert("Error", error);
@@ -63,10 +61,13 @@ const HomeScreen = () => {
     </View>
   );
 
+
+  const showSkeleton = isLoading && providers.length === 0;
+
   return (
     <SafeAreaView className={`flex-1 ${theme === 'dark' ? 'dark' : ''} bg-gray-50 dark:bg-gray-900`}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {isLoading ? renderSkeleton() : renderContent()}
+        {showSkeleton ? renderSkeleton() : renderContent()}
       </ScrollView>
     </SafeAreaView>
   );

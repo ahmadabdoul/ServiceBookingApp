@@ -1,23 +1,22 @@
 import { AppState, Booking, Category, Provider, User } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
 import localData from '../data/db.json';
 
 const APP_DATA_CACHE_KEY = 'app_data_cache';
 
-// 1. Define Action Types
 type Action =
   | { type: 'SET_LOADING' }
   | { type: 'SET_DATA_SUCCESS'; payload: { categories: Category[]; providers: Provider[]; bookings: Booking[]; currentUser: User | null; } }
-  | { type: 'SET_ERROR'; payload: string };
+  | { type: 'SET_ERROR'; payload: string }
+  | { type: 'ADD_BOOKING'; payload: Booking };
 
-// 2. Define the Context Shape
 interface AppContextType extends AppState {
   initializeAppData: () => Promise<void>;
+  addBooking: (booking: Omit<Booking, 'id'>) => Promise<void>;
 }
 
-// 3. Create the Reducer
 const appReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
     case 'SET_LOADING':
@@ -26,12 +25,16 @@ const appReducer = (state: AppState, action: Action): AppState => {
       return { ...state, isLoading: false, ...action.payload };
     case 'SET_ERROR':
       return { ...state, isLoading: false, error: action.payload };
+    case 'ADD_BOOKING':
+      return {
+        ...state,
+        bookings: [...state.bookings, action.payload],
+      };
     default:
       return state;
   }
 };
 
-// 4. Create the Context
 const AppContext = React.createContext<AppContextType | undefined>(undefined);
 
 const initialState: AppState = {
@@ -43,9 +46,8 @@ const initialState: AppState = {
   error: null,
 };
 
-// 5. Create the Provider Component
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [state, dispatch] = React.useReducer(appReducer, initialState);
+  const [state, dispatch] = useReducer(appReducer, initialState);
 
   const initializeAppData = useCallback(async () => {
     dispatch({ type: 'SET_LOADING' });
@@ -80,16 +82,33 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         dispatch({ type: 'SET_ERROR', payload: e.message });
       }
     }
-  }, []);
+  }, []); 
 
-  React.useEffect(() => {
+  
+  const addBooking = useCallback(async (newBookingData: Omit<Booking, 'id'>) => {
+    try {
+      const newBooking: Booking = {
+        ...newBookingData,
+        id: (state.bookings.length > 0 ? Math.max(...state.bookings.map(b => b.id)) : 0) + 1,
+      };
+      dispatch({ type: 'ADD_BOOKING', payload: newBooking });
+      const updatedState = { ...state, bookings: [...state.bookings, newBooking] };
+      await AsyncStorage.setItem(APP_DATA_CACHE_KEY, JSON.stringify(updatedState));
+      console.log('Booking added and cache updated successfully.');
+    } catch (e) {
+      console.error("Failed to add booking or update cache", e);
+    }
+  }, [state]); 
+
+  useEffect(() => {
     initializeAppData();
   }, [initializeAppData]);
 
   const contextValue = useMemo(() => ({
     ...state,
     initializeAppData,
-  }), [state, initializeAppData]);
+    addBooking, 
+  }), [state, initializeAppData, addBooking]);
 
   return (
     <AppContext.Provider value={contextValue}>
@@ -98,7 +117,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   );
 };
 
-// 6. Create the Custom Hook
 export const useAppContext = () => {
   const context = React.useContext(AppContext);
   if (context === undefined) {

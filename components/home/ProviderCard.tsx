@@ -1,6 +1,6 @@
 import { ProviderWithCategory } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 
@@ -8,10 +8,15 @@ interface ProviderCardProps {
   provider: ProviderWithCategory;
 }
 
+
 const ProviderCard: React.FC<ProviderCardProps> = ({ provider }) => {
+  const router = useRouter();
   return (
-    <Link href={`(tabs)/home/provider/${provider.id}`} asChild>
-      <TouchableOpacity className="flex-row items-center p-4 mb-4 bg-white dark:bg-gray-800 rounded-2xl shadow-md">
+    
+      <TouchableOpacity onPress={()=>{
+        //console.log(`/(tabs)/home/provider/${provider.id}`)
+        router.push(`/home/provider/${provider.id}`)
+      }} className="flex-row items-center p-4 mb-4 bg-white dark:bg-gray-800 rounded-2xl shadow-md">
         <Image 
           source={{ uri: provider.image }}
           className="w-24 h-24 rounded-2xl"
@@ -28,7 +33,7 @@ const ProviderCard: React.FC<ProviderCardProps> = ({ provider }) => {
           <Ionicons name="bookmark-outline" size={24} color="#9CA3AF" />
         </TouchableOpacity>
       </TouchableOpacity>
-    </Link>
+  
   );
 };
 
