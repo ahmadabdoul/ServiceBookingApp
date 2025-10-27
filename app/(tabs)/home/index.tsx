@@ -11,15 +11,11 @@ import { OfferBanner } from '@/components/home/OfferBanner';
 import ProviderCard from '@/components/home/ProviderCard';
 import { SearchBar } from '@/components/home/SearchBar';
 import SkeletonLoader from '@/components/shared/SkeletonLoader';
+import "@/global.css";
 
 const HomeScreen = () => {
   const { providers, categories, isLoading, error, initializeAppData } = useAppContext();
   const { theme } = useTheme();
-
-  useEffect(() => {
-    // Initialize the app data on first render
-    initializeAppData();
-  }, []);
 
   // Display an alert if there's an error (e.g., offline with no cache)
   useEffect(() => {

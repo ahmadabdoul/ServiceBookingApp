@@ -27,7 +27,7 @@ export default function RootLayout() {
   return (
     <AppProvider>
       <ThemeProvider>
-        <Stack>
+        <Stack initialRouteName='(tabs)'>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         </Stack>
       </ThemeProvider>

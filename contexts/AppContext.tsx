@@ -1,7 +1,7 @@
 import { AppState, Booking, Category, Provider, User } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import localData from '../data/db.json';
 
 const APP_DATA_CACHE_KEY = 'app_data_cache';
@@ -9,7 +9,7 @@ const APP_DATA_CACHE_KEY = 'app_data_cache';
 // 1. Define Action Types
 type Action =
   | { type: 'SET_LOADING' }
-  | { type: 'SET_DATA_SUCCESS'; payload: { categories: Category[]; providers: Provider[]; bookings: Booking[]; currentUser: User } }
+  | { type: 'SET_DATA_SUCCESS'; payload: { categories: Category[]; providers: Provider[]; bookings: Booking[]; currentUser: User | null; } }
   | { type: 'SET_ERROR'; payload: string };
 
 // 2. Define the Context Shape
@@ -34,20 +34,20 @@ const appReducer = (state: AppState, action: Action): AppState => {
 // 4. Create the Context
 const AppContext = React.createContext<AppContextType | undefined>(undefined);
 
+const initialState: AppState = {
+  categories: [],
+  providers: [],
+  bookings: [],
+  currentUser: null,
+  isLoading: true,
+  error: null,
+};
+
 // 5. Create the Provider Component
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const initialState: AppState = {
-    categories: [],
-    providers: [],
-    bookings: [],
-    currentUser: null,
-    isLoading: true,
-    error: null,
-  };
-
   const [state, dispatch] = React.useReducer(appReducer, initialState);
 
-  const initializeAppData = async () => {
+  const initializeAppData = useCallback(async () => {
     dispatch({ type: 'SET_LOADING' });
     try {
       const netState = await NetInfo.fetch();
@@ -80,14 +80,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         dispatch({ type: 'SET_ERROR', payload: e.message });
       }
     }
-  };
+  }, []);
 
   React.useEffect(() => {
     initializeAppData();
-  }, []);
+  }, [initializeAppData]);
+
+  const contextValue = useMemo(() => ({
+    ...state,
+    initializeAppData,
+  }), [state, initializeAppData]);
 
   return (
-    <AppContext.Provider value={{ ...state, initializeAppData }}>
+    <AppContext.Provider value={contextValue}>
       {children}
     </AppContext.Provider>
   );

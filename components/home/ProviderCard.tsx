@@ -10,21 +10,23 @@ interface ProviderCardProps {
 
 const ProviderCard: React.FC<ProviderCardProps> = ({ provider }) => {
   return (
-    <Link href={`/providers/${provider.id}`} asChild>
-      <TouchableOpacity className="flex-row items-center p-4 mb-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+    <Link href={`(tabs)/home/provider/${provider.id}`} asChild>
+      <TouchableOpacity className="flex-row items-center p-4 mb-4 bg-white dark:bg-gray-800 rounded-2xl shadow-md">
         <Image 
           source={{ uri: provider.image }}
-          className="w-20 h-20 rounded-lg"
+          className="w-24 h-24 rounded-2xl"
         />
         <View className="ml-4 flex-1">
-          <Text className="text-lg font-bold text-gray-900 dark:text-white">{provider.name}</Text>
-          <Text className="text-sm text-gray-500 dark:text-gray-400">{provider.categoryName}</Text>
-          <View className="flex-row items-center mt-1">
-            <Ionicons name="star" size={16} color="#FFC107" />
-            <Text className="ml-1 text-gray-600 dark:text-gray-300">{provider.rating}</Text>
+          <Text className="text-xl font-bold text-gray-900 dark:text-white">{provider.name}</Text>
+          <Text className="text-base text-gray-500 dark:text-gray-400 mt-1">{provider.categoryName}</Text>
+          <View className="flex-row items-center mt-2">
+            <Ionicons name="star" size={18} color="#FFC107" />
+            <Text className="ml-1.5 text-lg text-gray-700 dark:text-gray-300 font-semibold">{provider.rating}</Text>
           </View>
         </View>
-        <Ionicons name="chevron-forward" size={24} color="#CBD5E1" />
+        <TouchableOpacity className="p-2">
+          <Ionicons name="bookmark-outline" size={24} color="#9CA3AF" />
+        </TouchableOpacity>
       </TouchableOpacity>
     </Link>
   );
