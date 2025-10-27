@@ -39,7 +39,13 @@ export interface Category {
     avatar: string;
   }
   
-  // A view-model type for displaying providers with their category name
+  
   export interface ProviderWithCategory extends Provider {
+    categoryName: string;
+  }
+
+  export interface EnrichedBooking extends Booking {
+    providerName: string;
+    providerImage: string;
     categoryName: string;
   }
