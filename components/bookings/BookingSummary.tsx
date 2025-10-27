@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 
 interface BookingSummaryProps {
   pricePerHour: number;
-  duration: number; // in hours
+  duration: number; 
 }
 
 export const BookingSummary: React.FC<BookingSummaryProps> = ({ pricePerHour, duration }) => {

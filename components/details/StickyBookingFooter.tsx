@@ -18,7 +18,7 @@ export const StickyBookingFooter: React.FC<StickyBookingFooterProps> = ({ provid
           <Text className="text-2xl font-bold text-gray-900 dark:text-white">${provider.pricePerHour}</Text>
         </View>
         
-        {/* Use the `href` object to pass parameters to the modal route */}
+        
         <Link 
           href={{
             pathname: "/booking",

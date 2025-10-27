@@ -3,12 +3,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import { create } from 'zustand';
 
-// Import the local mock data as a fallback and for online fetching
 import localData from '../data/db.json';
 
 const APP_DATA_CACHE_KEY = 'app_data_cache';
 
-// Define the shape of our store's state
 interface AppState {
   categories: Category[];
   providers: Provider[];

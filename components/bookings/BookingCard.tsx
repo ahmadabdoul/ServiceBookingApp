@@ -15,9 +15,7 @@ const BookingCardComponent: React.FC<BookingCardProps> = ({ booking }) => {
   const isUpcoming = booking.visualStatus === 'Upcoming';
 
   return (
-    // --- MODIFICATION: Added `relative` positioning to the main container ---
     <View className="relative bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4">
-      {/* --- NEW: Status Badge --- */}
       <View 
         className={`absolute top-4 right-4 px-2 py-1 rounded-full ${
           isUpcoming 
