@@ -7,13 +7,35 @@ interface BookingCardProps {
   booking: EnrichedBooking;
 }
 
-export const BookingCard: React.FC<BookingCardProps> = ({ booking }) => {
+const BookingCardComponent: React.FC<BookingCardProps> = ({ booking }) => {
   const formattedDate = new Date(booking.date).toLocaleDateString('en-US', {
     month: 'short', day: 'numeric', year: 'numeric'
   });
 
+  const isUpcoming = booking.visualStatus === 'Upcoming';
+
   return (
-    <View className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4">
+    // --- MODIFICATION: Added `relative` positioning to the main container ---
+    <View className="relative bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4">
+      {/* --- NEW: Status Badge --- */}
+      <View 
+        className={`absolute top-4 right-4 px-2 py-1 rounded-full ${
+          isUpcoming 
+            ? 'bg-blue-100 dark:bg-blue-900' 
+            : 'bg-gray-200 dark:bg-gray-700'
+        }`}
+      >
+        <Text 
+          className={`font-bold text-xs ${
+            isUpcoming 
+              ? 'text-blue-800 dark:text-blue-300' 
+              : 'text-gray-700 dark:text-gray-300'
+          }`}
+        >
+          {booking.visualStatus}
+        </Text>
+      </View>
+
       <View className="flex-row items-center">
         <Image source={{ uri: booking.providerImage }} className="w-16 h-16 rounded-lg" />
         <View className="ml-4 flex-1">
@@ -34,3 +56,5 @@ export const BookingCard: React.FC<BookingCardProps> = ({ booking }) => {
     </View>
   );
 };
+
+export const BookingCard = React.memo(BookingCardComponent);

@@ -48,4 +48,5 @@ export interface Category {
     providerName: string;
     providerImage: string;
     categoryName: string;
+    visualStatus: 'Upcoming' | 'Completed'; 
   }
