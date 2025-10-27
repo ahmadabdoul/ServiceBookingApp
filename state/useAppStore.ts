@@ -16,19 +16,22 @@ interface AppState {
   currentUser: User | null;
   isLoading: boolean;
   error: string | null;
+  searchQuery: string;
+  activeCategoryId: number | null;
   initializeAppData: () => Promise<void>;
 }
 
 export const useAppStore = create<AppState>((set) => ({
-  // Initial State
+  
   categories: [],
   providers: [],
   bookings: [],
-  currentUser: null, // We'll set a default user for now
+  currentUser: null, 
   isLoading: true,
   error: null,
-
-  // The core action to fetch and manage data
+  searchQuery: string;
+    activeCategoryId: number | null;
+  
   initializeAppData: async () => {
     set({ isLoading: true });
 
@@ -45,18 +48,18 @@ export const useAppStore = create<AppState>((set) => ({
           categories: localData.categories,
           providers: localData.providers,
           bookings: localData.bookings,
-          currentUser: localData.users[0], // Setting the first user as current
+          currentUser: localData.users[0], 
         };
 
-        // Update the state
+        
         set({ ...freshData, isLoading: false, error: null });
 
-        // Cache the fresh data for offline use
+        
         await AsyncStorage.setItem(APP_DATA_CACHE_KEY, JSON.stringify(freshData));
         console.log("Fresh data cached successfully.");
 
       } else {
-        // --- OFFLINE PATH ---
+        
         console.log("App is offline. Loading data from cache...");
         const cachedData = await AsyncStorage.getItem(APP_DATA_CACHE_KEY);
 
@@ -65,7 +68,7 @@ export const useAppStore = create<AppState>((set) => ({
           set({ ...parsedData, isLoading: false, error: null });
           console.log("Data loaded from cache.");
         } else {
-          // Handle the case where the user is offline and has no cache
+        
           set({ isLoading: false, error: "You are offline and no data is cached." });
           console.log("Offline and no cache available.");
         }

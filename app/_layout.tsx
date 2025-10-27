@@ -36,6 +36,13 @@ export default function RootLayout() {
               headerShown: false, 
             }} 
           />
+          <Stack.Screen 
+            name="success" 
+            options={{ 
+              
+              headerShown: false, 
+            }} 
+          />
         </Stack>
       </ThemeProvider>
     </AppProvider>

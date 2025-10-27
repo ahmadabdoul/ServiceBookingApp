@@ -14,12 +14,12 @@ const CategoryProviderListScreen = () => {
   const { theme } = useTheme();
   const { categoryId } = useLocalSearchParams<{ categoryId: string }>();
 
-  // Get all data from the global store
+
   const { providers, categories, isLoading, error, initializeAppData } = useAppContext();
-  // Find the current category's name
+
   const category = categories.find(cat => cat.id === Number(categoryId));
   
-  // Filter the providers based on the categoryId from the URL
+  
   const filteredProviders: ProviderWithCategory[] = providers
     .filter(provider => provider.categoryId === Number(categoryId))
     .map(p => ({

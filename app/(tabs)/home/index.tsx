@@ -8,12 +8,12 @@ import { useAppContext } from '@/contexts/AppContext';
 import "@/global.css";
 import { useTheme } from '@/hooks/useTheme';
 import { ProviderWithCategory } from '@/types';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Alert, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const HomeScreen = () => {
-  const { providers, categories, isLoading, error } = useAppContext();
+  const { providers, categories, isLoading, error, searchQuery, activeCategoryId } = useAppContext();
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -21,6 +21,29 @@ const HomeScreen = () => {
       Alert.alert("Error", error);
     }
   }, [error]);
+  const filteredProviders = useMemo(() => {
+    
+    let enriched = providers.map(p => ({
+      ...p,
+      categoryName: categories.find(c => c.id === p.categoryId)?.name || 'Service',
+    }));
+
+    
+    if (activeCategoryId) {
+      enriched = enriched.filter(p => p.categoryId === activeCategoryId);
+    }
+
+    
+    if (searchQuery.length > 0) {
+      const lowercasedQuery = searchQuery.toLowerCase();
+      enriched = enriched.filter(p => 
+        p.name.toLowerCase().includes(lowercasedQuery) ||
+        p.categoryName.toLowerCase().includes(lowercasedQuery)
+      );
+    }
+    
+    return enriched;
+  }, [providers, categories, searchQuery, activeCategoryId]);
 
   const providersWithCategory: ProviderWithCategory[] = providers.map(p => ({
     ...p,
@@ -56,11 +79,15 @@ const HomeScreen = () => {
       </View>
       <View className="mt-6 p-4">
         <Text className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Top-Rated Providers</Text>
-        {providersWithCategory.map(p => <ProviderCard key={p.id} provider={p} />)}
+        
+        {filteredProviders.length > 0 ? (
+          filteredProviders.map(p => <ProviderCard key={p.id} provider={p} />)
+        ) : (
+          <Text className="text-center text-gray-500 dark:text-gray-400 mt-8">No providers found.</Text>
+        )}
       </View>
     </View>
-  );
-
+  )
 
   const showSkeleton = isLoading && providers.length === 0;
 

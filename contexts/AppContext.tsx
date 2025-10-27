@@ -1,7 +1,7 @@
 import { AppState, Booking, Category, Provider, User } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useReducer } from 'react';
 import localData from '../data/db.json';
 
 const APP_DATA_CACHE_KEY = 'app_data_cache';
@@ -10,11 +10,15 @@ type Action =
   | { type: 'SET_LOADING' }
   | { type: 'SET_DATA_SUCCESS'; payload: { categories: Category[]; providers: Provider[]; bookings: Booking[]; currentUser: User | null; } }
   | { type: 'SET_ERROR'; payload: string }
-  | { type: 'ADD_BOOKING'; payload: Booking };
+  | { type: 'ADD_BOOKING'; payload: Booking }
+  | { type: 'SET_SEARCH_QUERY'; payload: string } 
+  | { type: 'SET_CATEGORY_FILTER'; payload: number | null }; 
 
 interface AppContextType extends AppState {
   initializeAppData: () => Promise<void>;
   addBooking: (booking: Omit<Booking, 'id'>) => Promise<void>;
+  setSearchQuery: (query: string) => void;
+  setCategoryFilter: (categoryId: number | null) => void;
 }
 
 const appReducer = (state: AppState, action: Action): AppState => {
@@ -22,20 +26,27 @@ const appReducer = (state: AppState, action: Action): AppState => {
     case 'SET_LOADING':
       return { ...state, isLoading: true, error: null };
     case 'SET_DATA_SUCCESS':
-      return { ...state, isLoading: false, ...action.payload };
+    
+      return { ...state, isLoading: false, ...action.payload, searchQuery: '', activeCategoryId: null };
     case 'SET_ERROR':
       return { ...state, isLoading: false, error: action.payload };
     case 'ADD_BOOKING':
-      return {
-        ...state,
-        bookings: [...state.bookings, action.payload],
-      };
+      return { ...state, bookings: [...state.bookings, action.payload] };
+    case 'SET_SEARCH_QUERY':
+      return { ...state, searchQuery: action.payload };
+    case 'SET_CATEGORY_FILTER':
+      // If the user clicks the same category again, toggle it off
+      if (state.activeCategoryId === action.payload) {
+        return { ...state, activeCategoryId: null };
+      }
+      return { ...state, activeCategoryId: action.payload };
     default:
       return state;
   }
 };
 
-const AppContext = React.createContext<AppContextType | undefined>(undefined);
+
+const AppContext = createContext<AppContextType | undefined>(undefined);
 
 const initialState: AppState = {
   categories: [],
@@ -44,6 +55,8 @@ const initialState: AppState = {
   currentUser: null,
   isLoading: true,
   error: null,
+  searchQuery: '',
+  activeCategoryId: null,
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -84,7 +97,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, []); 
 
-  
   const addBooking = useCallback(async (newBookingData: Omit<Booking, 'id'>) => {
     try {
       const newBooking: Booking = {
@@ -100,6 +112,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [state]); 
 
+  const setSearchQuery = (query: string) => {
+    dispatch({ type: 'SET_SEARCH_QUERY', payload: query });
+  };
+
+  const setCategoryFilter = (categoryId: number | null) => {
+    dispatch({ type: 'SET_CATEGORY_FILTER', payload: categoryId });
+  };
+
   useEffect(() => {
     initializeAppData();
   }, [initializeAppData]);
@@ -107,7 +127,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const contextValue = useMemo(() => ({
     ...state,
     initializeAppData,
-    addBooking, 
+    addBooking,
+    setSearchQuery,
+    setCategoryFilter,
   }), [state, initializeAppData, addBooking]);
 
   return (
@@ -118,7 +140,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 };
 
 export const useAppContext = () => {
-  const context = React.useContext(AppContext);
+  const context = useContext(AppContext);
   if (context === undefined) {
     throw new Error('useAppContext must be used within an AppProvider');
   }
