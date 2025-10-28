@@ -66,7 +66,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     dispatch({ type: 'SET_LOADING' });
     try {
       const netState = await NetInfo.fetch();
-      if (netState.isConnected && netState.isInternetReachable) {
+      const isOnline = netState.isConnected && netState.isInternetReachable !== false;
+      if (isOnline) {
         console.log("App is online. Fetching fresh data...");
         await new Promise(resolve => setTimeout(resolve, 1000));
         const freshData = {
