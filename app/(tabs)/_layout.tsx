@@ -22,6 +22,7 @@ export default function TabsLayout() {
         },
         headerShown: false,
       }}
+      initialRouteName='home'
     >
       <Tabs.Screen
         name="home"
