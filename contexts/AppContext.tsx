@@ -35,7 +35,7 @@ const appReducer = (state: AppState, action: Action): AppState => {
     case 'SET_SEARCH_QUERY':
       return { ...state, searchQuery: action.payload };
     case 'SET_CATEGORY_FILTER':
-      // If the user clicks the same category again, toggle it off
+    
       if (state.activeCategoryId === action.payload) {
         return { ...state, activeCategoryId: null };
       }
